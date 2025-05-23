@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "jsdom": "^26.1.0"
+  }
+}
