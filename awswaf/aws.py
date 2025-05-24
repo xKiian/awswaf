@@ -8,22 +8,20 @@ class AwsWaf:
     def __init__(self, goku_props):
         self.session = requests.Session(impersonate="chrome")
         self.session.headers = {
-            'accept': '*/*',
-            'accept-language': 'en-US,en;q=0.5',
-            'cache-control': 'no-cache',
-            'dnt': '1',
-            'origin': 'https://accounts.binance.com',
-            'pragma': 'no-cache',
-            'priority': 'u=1, i',
-            'referer': 'https://accounts.binance.com/',
-            'sec-ch-ua': '"Chromium";v="136", "Brave";v="136", "Not.A/Brand";v="99"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'cross-site',
-            'sec-gpc': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
+            "host": "fe4385362baa.ead381d8.eu-west-1.token.awswaf.com",
+            "connection": "keep-alive",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
+            "sec-ch-ua-mobile": "?0",
+            "accept": "*/*",
+            "origin": "https://www.binance.com",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://www.binance.com/",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
         }
         self.goku_props = goku_props
 
@@ -41,7 +39,7 @@ class AwsWaf:
         return {
             "challenge": inputs["challenge"],
             "checksum": checksum,
-            "client": "browser",
+            "client": "Browser",
             "domain": "accounts.binance.com",
             "existing_token": None,
             "goku_props": self.goku_props,
@@ -167,9 +165,29 @@ class AwsWaf:
         }
 
     def verify(self, payload):
-        return self.session.post("https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/verify", json=payload).json()["token"]
+        self.session.headers = {
+            "host": "fe4385362baa.ead381d8.eu-west-1.token.awswaf.com",
+            "connection": "keep-alive",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
+            "content-type": "text/plain;charset=UTF-8",
+            "sec-ch-ua-mobile": "?0",
+            "accept": "*/*",
+            "origin": "https://www.binance.com",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://www.binance.com/",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+        }
+        return self.session.post(
+            "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/verify",
+            json=payload).json()["token"]
 
     def __call__(self):
         inputs = self.get_inputs()
+        print(inputs)
         payload = self.build_payload(inputs)
         return self.verify(payload)

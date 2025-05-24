@@ -1,4 +1,6 @@
 import hashlib
+import binascii
+import pyscrypt
 
 CHAR_MAP = {
     '0': "0000",
@@ -43,6 +45,33 @@ def hashPow(challenge_input, checksum, difficulty):
             print(e)
             hash_hex = "sha2H="
         if difficulty_met(difficulty, hash_hex):
+            return str(nonce)
+        nonce += 1
+
+
+def scrypt_func(input_str, salt_str, memory_cost):
+    salt = salt_str.encode('utf-8')
+    input_bytes = input_str.encode('utf-8')
+    result = pyscrypt.hash(password=input_bytes,
+                           salt=salt,
+                           N=memory_cost,
+                           r=8,
+                           p=1,
+                           dkLen=16)
+    return binascii.hexlify(result).decode('ascii')
+
+def compute_scrypt_nonce(params):
+    combined = params['input'] + params['checksum']
+    checksum = params['checksum']
+    memory = params['memory']
+    nonce = 0
+    while True:
+        try:
+            hash_result = scrypt_func(f"{combined}{nonce}", checksum, memory)
+        except Exception as e:
+            print(e)
+            hash_result = "scryptH="
+        if difficulty_met(params['difficulty'], hash_result):
             return str(nonce)
         nonce += 1
 

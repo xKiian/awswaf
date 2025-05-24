@@ -37,7 +37,7 @@ def encrypt(data):
 
 
 def get_fp():
-    ts = time.time() * 1000
+    ts = int(time.time() * 1000)
     fp = {
         "metrics": {
             "fp2": 1,
