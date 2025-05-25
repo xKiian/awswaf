@@ -20218,7 +20218,6 @@ function a0_0x4494(_0x4b393f, _0x3cebfb) {
       var _0x13045a = new Date().getTime() - _0x36a94a;
       return _0x4fee66 - _0x13045a < _0x185c9d;
     };
-    var _0x37cd06 = window.crypto || window.msCrypto;
     var _0x4acb21 = {
       'canUseLocalStorage': true,
       'storage': {}
@@ -21025,24 +21024,7 @@ function a0_0x4494(_0x4b393f, _0x3cebfb) {
       return _0x28b458;
     }(_0x2d6695.FWCIMCachingCollector);
     var _0x16f5f2 = _0x3086c6(0x4f);
-    var _0x3c573b = ["identifier", "AES-GCM", 'function', "530556kbTVRR", "101KdOUFW", "pop", 'trys', "getRandomValues", "toHex", "fromCharCode", "return", "push", "1131826ZJDgen", "keyProvider", "then", "ops", "value", "prototype", "tag", 'update', "label", '1gVLlFt', "45570mwIVdO", "throw", "436214DCoZUE", "starting encrypt..", "__generator", "doEncrypt", 'mode', "11784ZKHFrL", "__awaiter", "createCipher", "iterator", "Generator is already executing.", "createBuffer", "length", "hexToBytes", "1261880dpfOVz", "encrypt", "call", "455362JbxWxg", "done", "output", "next"];
-    function _0x5afa4b(_0x5200af, _0x24b91b) {
-      return (_0x5afa4b = function (_0x338b87, _0x4c7371) {
-        return _0x3c573b[_0x338b87 -= 0x124];
-      })(_0x5200af, _0x24b91b);
-    }
-    !function (_0x14f749, _0xc06474) {
-      for (;;) {
-        try {
-          if (0xb4194 === -parseInt("530556kbTVRR") + -parseInt("11784ZKHFrL") * parseInt("101KdOUFW") + parseInt("1261880dpfOVz") + -parseInt("436214DCoZUE") * parseInt("1gVLlFt") + parseInt("1131826ZJDgen") + parseInt("45570mwIVdO") + parseInt("455362JbxWxg")) {
-            break;
-          }
-          _0x14f749.push(_0x14f749.shift());
-        } catch (_0x6e262f) {
-          _0x14f749.push(_0x14f749.shift());
-        }
-      }
-    }(_0x3c573b);
+
     var _0x369cb3 = function (_0x2d70bd, _0x533d3e, _0x4ca25f, _0x262f7d) {
       return new (_0x4ca25f || (_0x4ca25f = Promise))(function (_0x573ed9, _0x575077) {
         function _0x36892e(_0x130540) {
@@ -21197,11 +21179,11 @@ function a0_0x4494(_0x4b393f, _0x3cebfb) {
             _0x5c82f8 = this.keyProvider.provide();
             _0x29b39f = _0x16f5f2.util.hexToBytes("93d9f6846b629edb2bdc4466af627d998496cb0c08f9cf043de68d6b25aa9693");
             _0x103cc9 = function (_0x2638c2) {
-              if (!(null == _0x37cd06 ? undefined : _0x37cd06.getRandomValues)) {
+              if (!(null == crypto ? undefined : crypto.getRandomValues)) {
                 throw new Error("Secure random number generation is not supported by this browser");
               }
               var _0x4cabe0 = new Uint8Array(_0x2638c2);
-              _0x37cd06.getRandomValues(_0x4cabe0);
+              crypto.getRandomValues(_0x4cabe0);
               return String.fromCharCode.apply(null, _0x4cabe0);
             }(0xc);
             _0x537302 = this.doEncrypt(_0x267533, _0x29b39f, _0x103cc9);
@@ -21222,42 +21204,6 @@ function a0_0x4494(_0x4b393f, _0x3cebfb) {
       };
       return _0x18a62;
     }();
-    var _0x5c841c = ["704059YYsFDO", "884181iHWrlf", "20743atAOUQ", "indexOf", "329221GGzUvg", "14FYjClx", "checksum", "parse", "slice", "1376739HiXlNV", "21WofydF", '89202svQwLy', "1333931szICNW"];
-    function _0x44b58f(_0x3dc27c, _0xf602c5) {
-      return (_0x44b58f = function (_0x1caf85, _0x1d8fd6) {
-        return _0x5c841c[_0x1caf85 -= 0x1a7];
-      })(_0x3dc27c, _0xf602c5);
-    }
-    !function (_0x57a214, _0x50e360) {
-      for (;;) {
-        try {
-          if (0xac976 === parseInt("884181iHWrlf") + parseInt("1376739HiXlNV") + -parseInt("89202svQwLy") * -parseInt("14FYjClx") + -parseInt("704059YYsFDO") + parseInt("20743atAOUQ") * -parseInt("21WofydF") + -parseInt("1333931szICNW") + -parseInt("329221GGzUvg")) {
-            break;
-          }
-          _0x57a214.push(_0x57a214.shift());
-        } catch (_0x4b461b) {
-          _0x57a214.push(_0x57a214.shift());
-        }
-      }
-    }(_0x5c841c);
-    var _0x3561af = ['push', "color: green", "getOwnPropertySymbols", 'apply', 'initializeCompoundCollector!', "307487TTBWay", "Generator is already executing.", "count", "__rest", "Profiler.stop() is unimplemented!", "collectAndEncrypt", "1xVjVDX", "next", "profile", "value", "7717kpolVn", 'collect', "initializeCollectors", 'version', "; checksum: ", "getMetrics", '299069QuGGrd', "checksum", "end", 'function', '4OVxGlt', "call", "profiling.. !", 'trys', "Milliseconds", "propertyIsEnumerable", "820PvyTyR", "constructor", "17SclMVr", "stop", "284564mBHDaW", "prototype", "encrypt", "return", "log", 'start', 'done', "ops", 'pop', "concat", 'then', 'hasOwnProperty', "iterator", "errors", '__generator', "%c challengeProfilerMetrics ", "422611HewEoa", "86114iCGJIa", "label", 'unimplemented!', 'sent', "initializeCompoundCollector", "indexOf", "COLLECTORS", "initializationErrors", "360wFDJBe", "length", 'metrics', "getChecksum", 'now'];
-    function _0x2a7c07(_0xc95e41, _0x165650) {
-      return (_0x2a7c07 = function (_0x14d4c1, _0x483444) {
-        return _0x3561af[_0x14d4c1 -= 0xb3];
-      })(_0xc95e41, _0x165650);
-    }
-    !function (_0x42447c, _0x3af928) {
-      for (;;) {
-        try {
-          if (0x32916 === parseInt("1xVjVDX") * -parseInt("299069QuGGrd") + -parseInt("820PvyTyR") * parseInt("360wFDJBe") + parseInt("284564mBHDaW") + parseInt("86114iCGJIa") * -parseInt("4OVxGlt") + parseInt("307487TTBWay") + -parseInt("17SclMVr") * -parseInt("7717kpolVn") + parseInt("422611HewEoa")) {
-            break;
-          }
-          _0x42447c.push(_0x42447c.shift());
-        } catch (_0x3bf26a) {
-          _0x42447c.push(_0x42447c.shift());
-        }
-      }
-    }(_0x3561af);
     var _0x1d53d = function (_0x98c9d0, _0x5a6e70, _0x254f1, _0xc369d0) {
       return new (_0x254f1 || (_0x254f1 = Promise))(function (_0x56e82a, _0x4f79b0) {
         function _0x4d17d0(_0x4f4094) {

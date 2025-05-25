@@ -187,7 +187,15 @@ class AwsWaf:
             json=payload).json()["token"]
 
     def __call__(self):
-        inputs = self.get_inputs()
-        print(inputs)
+        inputs = {
+            "challenge": {
+                "input": "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiMDQ0MTFkMGEtM2FhMC00MDQ0LTlmNjctNTFjNTQ2ZGNmMTU0IiwiYXR0ZW1wdF9pZCI6Ijc0MjI2ZTU5LTIxYjktNDJkMC05NWMyLTAwNjcxMjBhZDNmNCIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yNVQxODowNDoxNS41ODQxMzY2NTJaIiwiZGlmZmljdWx0eSI6OCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNIQTIifQ==",
+                "hmac": "ogMP2MV01jAutzc2l5fKH21wNr/PQBjMplij5MPraVk=",
+                "region": "eu-west-1"
+            },
+            "challenge_type": "h72f957df656e80ba55f5d8ce2e8c7ccb59687dba3bfb273d54b08a261b2f3002",
+            "difficulty": 8
+        }
         payload = self.build_payload(inputs)
+        print(payload)
         return self.verify(payload)

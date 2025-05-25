@@ -2,10 +2,7 @@ import json
 import time
 import uuid
 import zlib
-import os
-import base64
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-
+from awswaf.crypto import encrypt
 
 def encode_with_crc(obj):
     payload = json.dumps(obj, separators=(',', ':')).encode('utf-8')
@@ -13,28 +10,6 @@ def encode_with_crc(obj):
     hex_crc = f"{crc:08x}"
     checksum = hex_crc.encode('ascii').upper()
     return checksum, checksum + b"#" + payload
-
-
-def encrypt(data):
-    kp = {
-        'identifier': "KramerAndRio",
-        'material': [0x4e2f88b3, 0x129d1b4e, 0x79cf3769, 0xeab45bcf]
-    }
-    identifier = kp['identifier']
-    material = kp['material']
-
-    key = b''.join(x.to_bytes(4, 'big') for x in material)
-
-    iv = os.urandom(12)
-    aesgcm = AESGCM(key)
-
-    ct_and_tag = aesgcm.encrypt(iv, data, None)
-    tag = ct_and_tag[-16:]
-    ciphertext = ct_and_tag[:-16]
-
-    iv_b64 = base64.b64encode(iv).decode('ascii')
-    return f"{identifier}::{iv_b64}::{tag.hex()}::{ciphertext.hex()}"
-
 
 def get_fp():
     ts = int(time.time() * 1000)
