@@ -1,5 +1,7 @@
 import hashlib
 import binascii
+from typing import Union, Callable, Any
+
 import pyscrypt
 
 CHAR_MAP = {
@@ -60,6 +62,7 @@ def scrypt_func(input_str, salt_str, memory_cost):
                            dkLen=16)
     return binascii.hexlify(result).decode('ascii')
 
+
 def compute_scrypt_nonce(challenge_input, checksum, difficulty):
     combined = challenge_input + checksum
     memory = 128
@@ -77,8 +80,14 @@ def compute_scrypt_nonce(challenge_input, checksum, difficulty):
         nonce += 1
 
 
-CHALLENGE_TYPES = {
+CHALLENGE_TYPES: dict[str, Union[Callable[[Any, Any, Any], str], str]] = {
     'h72f957df656e80ba55f5d8ce2e8c7ccb59687dba3bfb273d54b08a261b2f3002': compute_scrypt_nonce,
     'h7b0c470f0cfe3a80a9e26526ad185f484f6817d0832712a4a37a908786a6a67f': hashPow,
     'ha9faaffd31b4d5ede2a2e19d2d7fd525f66fee61911511960dcbb52d3c48ce25': "mp_verify"
 }
+
+if __name__ == "__main__":
+    print(compute_scrypt_nonce(
+        "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiZDEyMzNjM2EtZGIyNS00ZTJmLThmODQtOWVjZDFkMjk1NDlhIiwiYXR0ZW1wdF9pZCI6ImZhNTUyNTZhLTJmNTctNDM3MS1hYzdjLTY4ZTE0ZjU0ZTVjNCIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yNlQxMjo1ODozMS4yMTQ2ODM2MTJaIiwiZGlmZmljdWx0eSI6NCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNjcnlwdCJ9",
+        "084CF3DD",
+        4))

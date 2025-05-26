@@ -6,7 +6,7 @@ from awswaf.fingerprint import get_fp
 
 class AwsWaf:
     def __init__(self, goku_props):
-        self.session = requests.Session(impersonate="chrome")
+        self.session = requests.Session(impersonate="chrome", verify=False, proxy="http://127.0.0.1:8050")
         self.session.headers = {
             "host": "fe4385362baa.ead381d8.eu-west-1.token.awswaf.com",
             "connection": "keep-alive",
@@ -24,6 +24,8 @@ class AwsWaf:
             "accept-language": "en-US,en;q=0.9"
         }
         self.goku_props = goku_props
+        self.session.get(
+            "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/challenge.js")
 
     @staticmethod
     def extract_goku_props(html: str):
@@ -37,20 +39,25 @@ class AwsWaf:
         verify = CHALLENGE_TYPES[inputs["challenge_type"]]
         checksum, fp = get_fp()
         return {
-            "challenge": inputs["challenge"],
+            "challenge": {
+                "input": "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiM2MzMWJkOWQtYzdkYy00OGY2LThhYmMtMGY1NmM2ZjYyZDI4IiwiYXR0ZW1wdF9pZCI6ImY3Njg5MTQ4LTQ4ZWYtNGZiNS05M2Y4LTQ1YWQyYjg2ZjI1YyIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yNlQxNDoxODoyMC40MTU0MDI4MTdaIiwiZGlmZmljdWx0eSI6NCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNjcnlwdCJ9",
+                "hmac": "XRaU3YNAou2vvD6hSzh5VOcphe0abWgtRUmEKJ9fs8Q=",
+                "region": "eu-west-1"
+            },
+            "solution": verify(inputs["challenge"]["input"], checksum, inputs["difficulty"]),
+            "signals": [{"name": "KramerAndRio", "value": {"Present": fp}}],
             "checksum": checksum,
-            "client": "Browser",
-            "domain": "accounts.binance.com",
             "existing_token": None,
-            "goku_props": self.goku_props,
+            "client": "Browser",
+            "domain": "www.binance.com",
             "metrics": [
                 {
                     "name": "2",
-                    "value": 1,
+                    "value": 0.20000000018626451,
                     "unit": "2"
                 },
                 {
-                    "name": "undefined",
+                    "name": "100",
                     "value": 1,
                     "unit": "2"
                 },
@@ -61,12 +68,12 @@ class AwsWaf:
                 },
                 {
                     "name": "102",
-                    "value": 1,
+                    "value": 0,
                     "unit": "2"
                 },
                 {
                     "name": "103",
-                    "value": 12,
+                    "value": 7,
                     "unit": "2"
                 },
                 {
@@ -76,7 +83,7 @@ class AwsWaf:
                 },
                 {
                     "name": "105",
-                    "value": 0,
+                    "value": 1,
                     "unit": "2"
                 },
                 {
@@ -96,7 +103,7 @@ class AwsWaf:
                 },
                 {
                     "name": "undefined",
-                    "value": 1,
+                    "value": 0,
                     "unit": "2"
                 },
                 {
@@ -106,12 +113,12 @@ class AwsWaf:
                 },
                 {
                     "name": "111",
-                    "value": 6,
+                    "value": 3,
                     "unit": "2"
                 },
                 {
                     "name": "112",
-                    "value": 1,
+                    "value": 0,
                     "unit": "2"
                 },
                 {
@@ -121,7 +128,7 @@ class AwsWaf:
                 },
                 {
                     "name": "3",
-                    "value": 4.5,
+                    "value": 2.2999999998137355,
                     "unit": "2"
                 },
                 {
@@ -131,27 +138,27 @@ class AwsWaf:
                 },
                 {
                     "name": "1",
-                    "value": 29.800000000745058,
+                    "value": 14.5,
                     "unit": "2"
                 },
                 {
                     "name": "4",
-                    "value": 8.099999999627471,
+                    "value": 25.700000000186265,
                     "unit": "2"
                 },
                 {
                     "name": "5",
-                    "value": 0.5,
+                    "value": 0.2999999998137355,
                     "unit": "2"
                 },
                 {
                     "name": "6",
-                    "value": 38.40000000037253,
+                    "value": 40.5,
                     "unit": "2"
                 },
                 {
-                    "name": "undefined",
-                    "value": 79.10000000149012,
+                    "name": "0",
+                    "value": 55.5,
                     "unit": "2"
                 },
                 {
@@ -160,8 +167,7 @@ class AwsWaf:
                     "unit": "4"
                 }
             ],
-            "signals": [{"name": "KramerAndRio", "value": {"Present": fp}}],
-            "solution": verify(inputs["challenge"]["input"], checksum, inputs["difficulty"])
+            "goku_props": self.goku_props,
         }
 
     def verify(self, payload):
@@ -184,18 +190,9 @@ class AwsWaf:
         }
         return self.session.post(
             "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/verify",
-            json=payload).json()["token"]
+            data=json.dumps(payload, separators=(',', ':'))).json()["token"]
 
     def __call__(self):
-        inputs = {
-            "challenge": {
-                "input": "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiMDQ0MTFkMGEtM2FhMC00MDQ0LTlmNjctNTFjNTQ2ZGNmMTU0IiwiYXR0ZW1wdF9pZCI6Ijc0MjI2ZTU5LTIxYjktNDJkMC05NWMyLTAwNjcxMjBhZDNmNCIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yNVQxODowNDoxNS41ODQxMzY2NTJaIiwiZGlmZmljdWx0eSI6OCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNIQTIifQ==",
-                "hmac": "ogMP2MV01jAutzc2l5fKH21wNr/PQBjMplij5MPraVk=",
-                "region": "eu-west-1"
-            },
-            "challenge_type": "h72f957df656e80ba55f5d8ce2e8c7ccb59687dba3bfb273d54b08a261b2f3002",
-            "difficulty": 8
-        }
+        inputs = self.get_inputs()
         payload = self.build_payload(inputs)
-        print(payload)
         return self.verify(payload)

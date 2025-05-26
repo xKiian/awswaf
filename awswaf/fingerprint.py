@@ -4,12 +4,14 @@ import uuid
 import zlib
 from awswaf.crypto import encrypt
 
+
 def encode_with_crc(obj):
     payload = json.dumps(obj, separators=(',', ':')).encode('utf-8')
     crc = zlib.crc32(payload) & 0xFFFFFFFF
     hex_crc = f"{crc:08x}"
     checksum = hex_crc.encode('ascii').upper()
     return checksum, checksum + b"#" + payload
+
 
 def get_fp():
     ts = int(time.time() * 1000)
@@ -432,7 +434,7 @@ def get_fp():
         "be": {
             "si": False
         },
-        "end": ts + 200,
+        "end": ts + 1,
         "errors": [],
         "version": "2.3.0",
         "id": str(uuid.uuid4()),

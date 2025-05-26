@@ -23078,19 +23078,7 @@ function a0_0x4494(_0x4b393f, _0x3cebfb) {
         return _0x4e46f3[_0xc4a7ee -= 0x12d];
       })(_0x378bb9, _0x18668f);
     }
-    var _0x4514d9 = ['log', "attempts", "lastAttemptTimestamp", "headers", "call", "memory", "Acquired new token: ", "awsWafFetchRetryCount", "response", "724133AKfVBt", "SignalAcquisitionTime", "metrics", "ops", "token", "location", "Browser", "ChallengeScript", "apply", "Found new set of inputs in verify response, redoing challenge", "1neyweg", "invalid schema of aws_waf_token_challenge_attempts", "inputs", "isFirstPageLoad ", "interactive", "Max challenge attempts exceeded", "TelemetryFormCycleBufferClearedCount", "3NIRCEc", "function", 'buildVerifyProps()', 'CaptchaScript', "schedule", 'challenge_type', "Initiated refresh", 'aws-waf-token', "difficulty", "retries", "solved, building challenge envelope, took time: ", 'prototype', 'hasOwnProperty', 'challenge', "setItem", "match", "1979dvNpkH", "telemetry metrics", "catch", "req", "throw", "iterator", "getItem", "addEventListener", "timeoutMs", "now", "parse", "getEventsClearedCount", 'awsWafMaxTokenAge', "78895gGJUnx", 'complete', "1553853izCTvB", "length", "maxJitterMillis", "InputsApiLatency", "awswaf_captcha_solve_timestamp", "TelemetryNumberOfFormFields", "Milliseconds", "updateChallengeAttempts? timeSinceLastAttempt in millis: ", 'buildTelemetryProps()', "race", 'concat', "random", "sent", 'fetch', "DOMContentLoaded", 'baseUrl', "TotalTime", "found unsupported challenge type ", 'stringify', "next_interval", "input", "readyState", "minJitterMillis", "hidden", "then", "getTime", "shouldRefreshToken? ", 'toString', 'AwsWafIntegration', "TelemetryAcquisitionTime", "150077FYSUzH", "gokuProps", "acquireRefreshedToken()", 'x-amzn-waf-action', "awswaf_session_storage", "pop", 'ExistingTokenFound', "Count", "querySelector", "trys", "forms", "1234477rNaOnb", "getToken", "CookieFetchTime", "DOM fully loaded and parsed. Acquiring token..", "collectedTelemetryData", '104731ofdEVJ', "form", "x-aws-waf-token", "next", '10xOfXuy', "factor", 'value', 'getElementsByTagName', "push", "number", "checksum", "done", "Unsupported challenge", "aws_waf_token_challenge_attempts", '2cDKUKC', "assign", "host", "label", '__generator', 'return', "backoffMillis"];
-    !function (_0x438b80, _0x3c74ea) {
-      for (;;) {
-        try {
-          if (0xea7d9 === parseInt("150077FYSUzH") * -parseInt("10xOfXuy") + parseInt("1234477rNaOnb") * parseInt("1neyweg") + parseInt("2cDKUKC") * parseInt("1979dvNpkH") + -parseInt("3NIRCEc") * -parseInt("104731ofdEVJ") + parseInt("78895gGJUnx") + parseInt("1553853izCTvB") + -parseInt("724133AKfVBt")) {
-            break;
-          }
-          _0x438b80.push(_0x438b80.shift());
-        } catch (_0x364e55) {
-          _0x438b80.push(_0x438b80.shift());
-        }
-      }
-    }(_0x4514d9);
+
     var _0x5a14b3;
     var _0x4978d0 = function () {
       _0x4978d0 = Object.assign || function (_0x2b70ad) {
