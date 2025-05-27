@@ -16,46 +16,15 @@ def encode_with_crc(obj):
 def get_fp():
     ts = int(time.time() * 1000)
     fp = {
-        "metrics": {
-            "fp2": 1,
-            "browser": 0,
-            "capabilities": 1,
-            "gpu": 6,
-            "dnt": 0,
-            "math": 0,
-            "screen": 0,
-            "navigator": 0,
-            "auto": 0,
-            "stealth": 0,
-            "subtle": 0,
-            "canvas": 7,
-            "formdetector": 0,
-            "be": 0
-        },
+        "metrics": {"fp2": 1, "browser": 0, "capabilities": 1, "gpu": 7, "dnt": 0, "math": 0, "screen": 0,
+                    "navigator": 0, "auto": 1, "stealth": 0, "subtle": 0, "canvas": 5, "formdetector": 1, "be": 0},
         "start": ts,
         "flashVersion": None,
-        "plugins": [
-            {
-                "name": "PDF Viewer",
-                "str": "PDF Viewer "
-            },
-            {
-                "name": "Chrome PDF Viewer",
-                "str": "Chrome PDF Viewer "
-            },
-            {
-                "name": "Chromium PDF Viewer",
-                "str": "Chromium PDF Viewer "
-            },
-            {
-                "name": "Microsoft Edge PDF Viewer",
-                "str": "Microsoft Edge PDF Viewer "
-            },
-            {
-                "name": "WebKit built-in PDF",
-                "str": "WebKit built-in PDF "
-            }
-        ],
+        "plugins": [{"name": "PDF Viewer", "str": "PDF Viewer "},
+                    {"name": "Chrome PDF Viewer", "str": "Chrome PDF Viewer "},
+                    {"name": "Chromium PDF Viewer", "str": "Chromium PDF Viewer "},
+                    {"name": "Microsoft Edge PDF Viewer", "str": "Microsoft Edge PDF Viewer "},
+                    {"name": "WebKit built-in PDF", "str": "WebKit built-in PDF "}],
         "dupedPlugins": "PDF Viewer Chrome PDF Viewer Chromium PDF Viewer Microsoft Edge PDF Viewer WebKit built-in PDF ||1920-1080-1032-24-*-*-*",
         "screenInfo": "1920-1080-1032-24-*-*-*",
         "referrer": "",

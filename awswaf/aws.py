@@ -5,8 +5,8 @@ from awswaf.fingerprint import get_fp
 
 
 class AwsWaf:
-    def __init__(self, goku_props):
-        self.session = requests.Session(impersonate="chrome", verify=False, proxy="http://127.0.0.1:8050")
+    def __init__(self, goku_props, token=None):
+        self.session = requests.Session(impersonate="chrome")
         self.session.headers = {
             "host": "fe4385362baa.ead381d8.eu-west-1.token.awswaf.com",
             "connection": "keep-alive",
@@ -24,6 +24,7 @@ class AwsWaf:
             "accept-language": "en-US,en;q=0.9"
         }
         self.goku_props = goku_props
+        self.token = token
         self.session.get(
             "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/challenge.js")
 
@@ -40,13 +41,13 @@ class AwsWaf:
         checksum, fp = get_fp()
         return {
             "challenge": {
-                "input": "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiM2MzMWJkOWQtYzdkYy00OGY2LThhYmMtMGY1NmM2ZjYyZDI4IiwiYXR0ZW1wdF9pZCI6ImY3Njg5MTQ4LTQ4ZWYtNGZiNS05M2Y4LTQ1YWQyYjg2ZjI1YyIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yNlQxNDoxODoyMC40MTU0MDI4MTdaIiwiZGlmZmljdWx0eSI6NCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNjcnlwdCJ9",
-                "hmac": "XRaU3YNAou2vvD6hSzh5VOcphe0abWgtRUmEKJ9fs8Q=",
+                "input": "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiZmNlZjZkMzgtNGIwNC00MzdkLTkzYjktODY1MTQwMmRkZThiIiwiYXR0ZW1wdF9pZCI6IjQ5N2Y4ZTY5LTFiNzUtNDU0YS05MGU1LTczZmZjMWQ3OWJiZSIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yN1QxNDoyNToxNi43MTQwNzIzNTRaIiwiZGlmZmljdWx0eSI6NCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNjcnlwdCJ9",
+                "hmac": "+nApJ2snXq/dhNlGB5L0aO/RZkplLlEbpEdrmMECobw=",
                 "region": "eu-west-1"
             },
+            "checksum": checksum,
             "solution": verify(inputs["challenge"]["input"], checksum, inputs["difficulty"]),
             "signals": [{"name": "KramerAndRio", "value": {"Present": fp}}],
-            "checksum": checksum,
             "existing_token": None,
             "client": "Browser",
             "domain": "www.binance.com",

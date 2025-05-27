@@ -1,7 +1,7 @@
 from awswaf.aws import AwsWaf
 from curl_cffi import requests
 
-session = requests.Session(impersonate="chrome", verify=False, proxy="http://127.0.0.1:8050")
+session = requests.Session(impersonate="chrome")
 
 session.headers = headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
@@ -21,14 +21,13 @@ session.headers = headers = {
     'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
 }
-
 response = session.get("https://www.binance.com/")
 goku = AwsWaf.extract_goku_props(response.text)
 
-token = AwsWaf(goku)()
+token = AwsWaf(goku, )()
 session.headers.update({
     "cookie": "aws-waf-token=" + token
 })
 # print(session.headers)
 print(token[:100])
-print(len(session.get("https://www.binance.com/").text) > 24943)
+print(len(session.get("https://www.binance.com/").text) > 2494)
