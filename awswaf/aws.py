@@ -1,4 +1,6 @@
 import json
+import random
+
 from curl_cffi import requests
 from awswaf.verify import CHALLENGE_TYPES
 from awswaf.fingerprint import get_fp
@@ -55,7 +57,7 @@ class AwsWaf:
             "metrics": [
                 {
                     "name": "2",
-                    "value": 0.4000000022351742,
+                    "value": random.uniform(0, 1),
                     "unit": "2"
                 },
                 {
@@ -140,7 +142,7 @@ class AwsWaf:
                 },
                 {
                     "name": "1",
-                    "value": 16.299999997019728,
+                    "value": random.uniform(10, 20),
                     "unit": "2"
                 },
                 {
@@ -150,17 +152,17 @@ class AwsWaf:
                 },
                 {
                     "name": "5",
-                    "value": 0.10000300149011612,
+                    "value": random.uniform(0, 1),
                     "unit": "2"
                 },
                 {
                     "name": "6",
-                    "value": 52.899999918509884,
+                    "value": random.uniform(50, 60),
                     "unit": "2"
                 },
                 {
                     "name": "0",
-                    "value": 136.89999919850988,
+                    "value": random.uniform(130, 140),
                     "unit": "2"
                 },
                 {
