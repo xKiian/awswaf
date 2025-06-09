@@ -1,3 +1,5 @@
+import time
+
 from awswaf.aws import AwsWaf
 from curl_cffi import requests
 
@@ -24,10 +26,14 @@ session.headers = headers = {
 response = session.get("https://www.binance.com/")
 goku = AwsWaf.extract_goku_props(response.text)
 
-token = AwsWaf(goku, )()
+start = time.time()
+token = AwsWaf(goku)()
+end = time.time()
+
 session.headers.update({
     "cookie": "aws-waf-token=" + token
 })
-# print(session.headers)
-print(token[:100])
-print(len(session.get("https://www.binance.com/").text) > 2494)
+
+print("[+] token:", token[:100])
+print("[~] solved:", len(session.get("https://www.binance.com/").text) > 2494)
+print("[*] took:", end - start)

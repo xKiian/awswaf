@@ -40,11 +40,7 @@ class AwsWaf:
         verify = CHALLENGE_TYPES[inputs["challenge_type"]]
         checksum, fp = get_fp()
         return {
-            "challenge": {
-                "input": "eyJ2ZXJzaW9uIjoxLCJ1YmlkIjoiZmNlZjZkMzgtNGIwNC00MzdkLTkzYjktODY1MTQwMmRkZThiIiwiYXR0ZW1wdF9pZCI6IjQ5N2Y4ZTY5LTFiNzUtNDU0YS05MGU1LTczZmZjMWQ3OWJiZSIsImNyZWF0ZV90aW1lIjoiMjAyNS0wNS0yN1QxNDoyNToxNi43MTQwNzIzNTRaIiwiZGlmZmljdWx0eSI6NCwiY2hhbGxlbmdlX3R5cGUiOiJIYXNoY2FzaFNjcnlwdCJ9",
-                "hmac": "+nApJ2snXq/dhNlGB5L0aO/RZkplLlEbpEdrmMECobw=",
-                "region": "eu-west-1"
-            },
+            "challenge": inputs["challenge"],
             "checksum": checksum,
             "solution": verify(inputs["challenge"]["input"], checksum, inputs["difficulty"]),
             "signals": [{"name": "KramerAndRio", "value": {"Present": fp}}],
@@ -54,12 +50,12 @@ class AwsWaf:
             "metrics": [
                 {
                     "name": "2",
-                    "value": 0.20000000018626451,
+                    "value": 0.4000000022351742,
                     "unit": "2"
                 },
                 {
                     "name": "100",
-                    "value": 1,
+                    "value": 0,
                     "unit": "2"
                 },
                 {
@@ -74,7 +70,7 @@ class AwsWaf:
                 },
                 {
                     "name": "103",
-                    "value": 7,
+                    "value": 8,
                     "unit": "2"
                 },
                 {
@@ -84,7 +80,7 @@ class AwsWaf:
                 },
                 {
                     "name": "105",
-                    "value": 1,
+                    "value": 0,
                     "unit": "2"
                 },
                 {
@@ -99,7 +95,7 @@ class AwsWaf:
                 },
                 {
                     "name": "108",
-                    "value": 0,
+                    "value": 1,
                     "unit": "2"
                 },
                 {
@@ -114,7 +110,7 @@ class AwsWaf:
                 },
                 {
                     "name": "111",
-                    "value": 3,
+                    "value": 2,
                     "unit": "2"
                 },
                 {
@@ -129,7 +125,7 @@ class AwsWaf:
                 },
                 {
                     "name": "3",
-                    "value": 2.2999999998137355,
+                    "value": 4,
                     "unit": "2"
                 },
                 {
@@ -139,27 +135,27 @@ class AwsWaf:
                 },
                 {
                     "name": "1",
-                    "value": 14.5,
+                    "value": 16.299999997019728,
                     "unit": "2"
                 },
                 {
                     "name": "4",
-                    "value": 25.700000000186265,
+                    "value": 36.5,
                     "unit": "2"
                 },
                 {
                     "name": "5",
-                    "value": 0.2999999998137355,
+                    "value": 0.10000300149011612,
                     "unit": "2"
                 },
                 {
                     "name": "6",
-                    "value": 40.5,
+                    "value": 52.899999918509884,
                     "unit": "2"
                 },
                 {
                     "name": "0",
-                    "value": 55.5,
+                    "value": 136.89999919850988,
                     "unit": "2"
                 },
                 {
@@ -189,9 +185,10 @@ class AwsWaf:
             "accept-encoding": "gzip, deflate, br, zstd",
             "accept-language": "en-US,en;q=0.9"
         }
-        return self.session.post(
+        res = self.session.post(
             "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/verify",
-            data=json.dumps(payload, separators=(',', ':'))).json()["token"]
+            json=payload).json()
+        return res["token"]
 
     def __call__(self):
         inputs = self.get_inputs()
