@@ -12,7 +12,7 @@ def _check(digest: bytes, difficulty: int) -> bool:
         return False
     return True
 
-def hashPow(challenge_input, checksum, difficulty):
+def hash_pow(challenge_input, checksum, difficulty):
     combined_bytes = (challenge_input + checksum).encode('utf-8')
     for nonce in itertools.count(0):
         data = combined_bytes + str(nonce).encode()
@@ -44,6 +44,6 @@ def compute_scrypt_nonce(challenge_input, checksum, difficulty):
 
 CHALLENGE_TYPES: dict[str, Union[Callable[[Any, Any, Any], str], str]] = {
     'h72f957df656e80ba55f5d8ce2e8c7ccb59687dba3bfb273d54b08a261b2f3002': compute_scrypt_nonce,
-    'h7b0c470f0cfe3a80a9e26526ad185f484f6817d0832712a4a37a908786a6a67f': hashPow,
+    'h7b0c470f0cfe3a80a9e26526ad185f484f6817d0832712a4a37a908786a6a67f': hash_pow,
     'ha9faaffd31b4d5ede2a2e19d2d7fd525f66fee61911511960dcbb52d3c48ce25': "mp_verify"
 }

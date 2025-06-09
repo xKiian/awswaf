@@ -5,40 +5,45 @@ from awswaf.fingerprint import get_fp
 
 
 class AwsWaf:
-    def __init__(self, goku_props, token=None):
+    def __init__(self, goku_props: str,
+                 endpoint: str,
+                 domain: str,
+                 user_agent: str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+                 ):
         self.session = requests.Session(impersonate="chrome")
         self.session.headers = {
-            "host": "fe4385362baa.ead381d8.eu-west-1.token.awswaf.com",
             "connection": "keep-alive",
             "sec-ch-ua-platform": "\"Windows\"",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            "user-agent": user_agent,
             "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
             "sec-ch-ua-mobile": "?0",
             "accept": "*/*",
-            "origin": "https://www.binance.com",
+            #"origin": "https://www.binance.com",
             "sec-fetch-site": "cross-site",
             "sec-fetch-mode": "cors",
             "sec-fetch-dest": "empty",
-            "referer": "https://www.binance.com/",
+            #"referer": "https://www.binance.com/",
             "accept-encoding": "gzip, deflate, br, zstd",
             "accept-language": "en-US,en;q=0.9"
         }
         self.goku_props = goku_props
-        self.token = token
-        self.session.get(
-            "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/challenge.js")
+        self.user_agent = user_agent
+        self.domain = domain
+        self.endpoint = endpoint
 
     @staticmethod
-    def extract_goku_props(html: str):
-        return json.loads(html.split("window.gokuProps = ")[1].split(";")[0])
+    def extract(html: str):
+        goku_props = json.loads(html.split("window.gokuProps = ")[1].split(";")[0])
+        endpoint = html.split("script src=\"https://")[1].split("/challenge.js")[0]
+        return goku_props, endpoint
 
     def get_inputs(self):
         return self.session.get(
-            "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/inputs?client=browser").json()
+            f"https://{self.endpoint}/inputs?client=browser").json()
 
     def build_payload(self, inputs: dict):
         verify = CHALLENGE_TYPES[inputs["challenge_type"]]
-        checksum, fp = get_fp()
+        checksum, fp = get_fp(self.user_agent)
         return {
             "challenge": inputs["challenge"],
             "checksum": checksum,
@@ -46,7 +51,7 @@ class AwsWaf:
             "signals": [{"name": "KramerAndRio", "value": {"Present": fp}}],
             "existing_token": None,
             "client": "Browser",
-            "domain": "www.binance.com",
+            "domain": self.domain,
             "metrics": [
                 {
                     "name": "2",
@@ -169,24 +174,23 @@ class AwsWaf:
 
     def verify(self, payload):
         self.session.headers = {
-            "host": "fe4385362baa.ead381d8.eu-west-1.token.awswaf.com",
             "connection": "keep-alive",
             "sec-ch-ua-platform": "\"Windows\"",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+            "user-agent": self.user_agent,
             "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
             "content-type": "text/plain;charset=UTF-8",
             "sec-ch-ua-mobile": "?0",
             "accept": "*/*",
-            "origin": "https://www.binance.com",
+            #"origin": "https://www.binance.com",
             "sec-fetch-site": "cross-site",
             "sec-fetch-mode": "cors",
             "sec-fetch-dest": "empty",
-            "referer": "https://www.binance.com/",
+            #"referer": "https://www.binance.com/",
             "accept-encoding": "gzip, deflate, br, zstd",
             "accept-language": "en-US,en;q=0.9"
         }
         res = self.session.post(
-            "https://fe4385362baa.ead381d8.eu-west-1.token.awswaf.com/fe4385362baa/306922cde096/8b22eb923d34/verify",
+            f"https://{self.endpoint}/verify",
             json=payload).json()
         return res["token"]
 

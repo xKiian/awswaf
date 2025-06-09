@@ -3,9 +3,10 @@ import time
 from awswaf.aws import AwsWaf
 from curl_cffi import requests
 
-session = requests.Session(impersonate="chrome")
+while True:
+    session = requests.Session(impersonate="chrome")
 
-session.headers = headers = {
+    session.headers = headers = {
     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
     'accept-language': 'en-US,en;q=0.5',
     'cache-control': 'no-cache',
@@ -23,17 +24,16 @@ session.headers = headers = {
     'upgrade-insecure-requests': '1',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
 }
-response = session.get("https://www.binance.com/")
-goku = AwsWaf.extract_goku_props(response.text)
+    response = session.get("https://www.binance.com/")
+    goku, endpoint = AwsWaf.extract(response.text)
 
-start = time.time()
-token = AwsWaf(goku)()
-end = time.time()
+    start = time.time()
+    token = AwsWaf(goku, endpoint, "www.binance.com")()
+    end = time.time()
 
-session.headers.update({
-    "cookie": "aws-waf-token=" + token
-})
-
-print("[+] token:", token[:100])
-print("[~] solved:", len(session.get("https://www.binance.com/").text) > 2494)
-print("[*] took:", end - start)
+    session.headers.update({
+        "cookie": "aws-waf-token=" + token
+    })
+    #solved = len(session.get("https://www.binance.com/").text) > 2494
+    print("[+] Solved:", token[50:], "in", str(end - start) + "s")
+   

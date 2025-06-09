@@ -23805,6 +23805,7 @@ function a0_0x4494(_0x4b393f, _0x3cebfb) {
       return _0x5458e7(undefined, undefined, undefined, function () {
         return _0x1f4b85(this, function (_0x2c2a35) {
           "Acquired new token: ";
+
           return [0x2];
         });
       });
