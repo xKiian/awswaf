@@ -1,9 +1,8 @@
-import json
-import random
+import random, json
 
 from curl_cffi import requests
-from awswaf.verify import CHALLENGE_TYPES
-from awswaf.fingerprint import get_fp
+from python.awswaf.verify import CHALLENGE_TYPES
+from python.awswaf.fingerprint import get_fp
 
 
 class AwsWaf:
@@ -36,7 +35,7 @@ class AwsWaf:
     @staticmethod
     def extract(html: str):
         goku_props = json.loads(html.split("window.gokuProps = ")[1].split(";")[0])
-        endpoint = html.split("script src=\"https://")[1].split("/challenge.js")[0]
+        endpoint = html.split("src=\"https://")[1].split("/challenge.js")[0]
         return goku_props, endpoint
 
     def get_inputs(self):
@@ -171,7 +170,7 @@ class AwsWaf:
                     "unit": "4"
                 }
             ],
-            "goku_props": self.goku_props,
+            #"goku_props": self.goku_props,
         }
 
     def verify(self, payload):
