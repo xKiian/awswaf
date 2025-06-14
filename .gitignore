@@ -2,3 +2,6 @@ node_modules
 *.pyc
 webgl_full.json
 proxies.txt
+in.js
+out.js
+.idea
