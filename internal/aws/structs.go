@@ -184,7 +184,7 @@ type Verify struct {
 	Solution      string          `json:"solution"`
 	Signals       []VerifySignals `json:"signals"`
 	Checksum      string          `json:"checksum"`
-	ExistingToken string          `json:"existing_token"`
+	ExistingToken []string        `json:"existing_token"`
 	Client        string          `json:"client"`
 	Domain        string          `json:"domain"`
 	Metrics       []VerifyMetrics `json:"metrics"`

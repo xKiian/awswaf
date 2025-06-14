@@ -25,9 +25,11 @@ func NewAwsWaf(
 	gokuProps GokuProps,
 ) (*Waf, error) {
 	options := []tlsclient.HttpClientOption{
-		tlsclient.WithTimeoutSeconds(30),
+		tlsclient.WithTimeoutSeconds(5),
 		tlsclient.WithClientProfile(profiles.Chrome_133),
 		tlsclient.WithCookieJar(tlsclient.NewCookieJar()),
+		/*tlsclient.WithProxyUrl("http://127.0.0.1:8000"),
+		tlsclient.WithInsecureSkipVerify(),*/
 	}
 	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
 	if err != nil {
@@ -79,17 +81,34 @@ func (a *Waf) GetInputs() (Inputs, error) {
 		log.Println(err)
 		return Inputs{}, err
 	}
-	req.Header.Set("connection", "keep-alive")
-	req.Header.Set("sec-ch-ua-platform", `"Windows"`)
-	req.Header.Set("user-agent", a.userAgent)
-	req.Header.Set("sec-ch-ua", `"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"`)
-	req.Header.Set("sec-ch-ua-mobile", "?0")
-	req.Header.Set("accept", "* /*")
-	req.Header.Set("sec-fetch-site", "cross-site")
-	req.Header.Set("sec-fetch-mode", "cors")
-	req.Header.Set("sec-fetch-dest", "empty")
-	req.Header.Set("accept-encoding", "gzip, deflate, br, zstd")
-	req.Header.Set("accept-language", "en-US,en;q=0.9")
+	req.Header = http.Header{
+		"accept":             {"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"},
+		"accept-encoding":    {"gzip, deflate, br, zstd"},
+		"accept-language":    {"en-US,en;q=0.9"},
+		"pragma":             {"no-cache"},
+		"priority":           {"u=0, i"},
+		"sec-ch-ua":          {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"sec-ch-ua-mobile":   {"?0"},
+		"sec-ch-ua-platform": {`"Windows"`},
+		"sec-fetch-dest":     {"empty"},
+		"sec-fetch-mode":     {"cors"},
+		"sec-fetch-site":     {"cross-site"},
+		"user-agent":         {a.userAgent},
+		http.HeaderOrderKey: {
+			"accept",
+			"accept-language",
+			"accept-encoding",
+			"pragma",
+			"priority",
+			"sec-ch-ua",
+			"sec-ch-ua-mobile",
+			"sec-ch-ua-platform",
+			"sec-fetch-dest",
+			"sec-fetch-mode",
+			"sec-fetch-site",
+			"user-agent",
+		},
+	}
 	
 	resp, err := a.session.Do(req)
 	if err != nil {
@@ -105,12 +124,11 @@ func (a *Waf) GetInputs() (Inputs, error) {
 	return out, nil
 }
 
-func (a *Waf) BuildPayload(inputs Inputs) (map[string]interface{}, error) {
+func (a *Waf) BuildPayload(inputs Inputs) (*Verify, error) {
 	checksum, fpPayload, err := GetFP(a.userAgent)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("type", inputs.ChallengeType)
 	sol, err := SolveChallenge(
 		inputs.ChallengeType, inputs.Challenge.Input,
 		checksum, inputs.Difficulty,
@@ -151,30 +169,20 @@ func (a *Waf) BuildPayload(inputs Inputs) (map[string]interface{}, error) {
 			Unit:  m.Unit,
 		})
 	}
-	_ = Verify{
+	return &Verify{
 		Challenge:     inputs.Challenge,
 		Solution:      sol,
 		Signals:       signals,
 		Checksum:      checksum,
-		ExistingToken: "",
+		ExistingToken: nil,
 		Client:        "Browser",
 		Domain:        a.domain,
 		Metrics:       metrics,
 		GokuProps:     a.gokuProps,
-	}
-	return map[string]interface{}{
-		"challenge":      inputs.Challenge,
-		"checksum":       checksum,
-		"solution":       sol,
-		"signals":        signals,
-		"existing_token": nil,
-		"client":         "Browser",
-		"domain":         a.domain,
-		"metrics":        metrics,
 	}, nil
 }
 
-func (a *Waf) Verify(payload map[string]interface{}) (string, error) {
+func (a *Waf) Verify(payload *Verify) (string, error) {
 	url := fmt.Sprintf("https://%s/verify", a.host)
 	
 	data, err := json.Marshal(payload)
@@ -187,18 +195,37 @@ func (a *Waf) Verify(payload map[string]interface{}) (string, error) {
 		log.Println(err)
 		return "", err
 	}
-	req.Header.Set("connection", "keep-alive")
-	req.Header.Set("sec-ch-ua-platform", `"Windows"`)
-	req.Header.Set("user-agent", a.userAgent)
-	req.Header.Set("content-type", "text/plain;charset=UTF-8")
-	req.Header.Set("sec-ch-ua", `"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"`)
-	req.Header.Set("sec-ch-ua-mobile", "?0")
-	req.Header.Set("accept", "* /*")
-	req.Header.Set("sec-fetch-site", "cross-site")
-	req.Header.Set("sec-fetch-mode", "cors")
-	req.Header.Set("sec-fetch-dest", "empty")
-	req.Header.Set("accept-encoding", "gzip, deflate, br, zstd")
-	req.Header.Set("accept-language", "en-US,en;q=0.9")
+	req.Header = http.Header{
+		"accept":             {"*/*"},
+		"accept-encoding":    {"gzip, deflate, br, zstd"},
+		"connection":         {"keep-alive"},
+		"accept-language":    {"en-US,en;q=0.9"},
+		"content-type":       {"text/plain;charset=UTF-8"},
+		"priority":           {"u=1, i"},
+		"sec-ch-ua":          {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"sec-ch-ua-mobile":   {"?0"},
+		"sec-ch-ua-platform": {`"Windows"`},
+		"sec-fetch-dest":     {"empty"},
+		"sec-fetch-mode":     {"cors"},
+		"sec-fetch-site":     {"cross-site"},
+		"user-agent":         {a.userAgent},
+		http.HeaderOrderKey: {
+			"accept",
+			"accept-encoding",
+			"accept-language",
+			"connection",
+			"content-length",
+			"content-type",
+			"priority",
+			"sec-ch-ua",
+			"sec-ch-ua-mobile",
+			"sec-ch-ua-platform",
+			"sec-fetch-dest",
+			"sec-fetch-mode",
+			"sec-fetch-site",
+			"user-agent",
+		},
+	}
 	
 	resp, err := a.session.Do(req)
 	if err != nil {

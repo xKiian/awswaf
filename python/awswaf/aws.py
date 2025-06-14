@@ -1,8 +1,8 @@
 import random, json
 
 from curl_cffi import requests
-from python.awswaf.verify import CHALLENGE_TYPES
-from python.awswaf.fingerprint import get_fp
+from awswaf.verify import CHALLENGE_TYPES
+from awswaf.fingerprint import get_fp
 
 
 class AwsWaf:

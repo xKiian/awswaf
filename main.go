@@ -58,17 +58,37 @@ func solveBinance(client tlsclient.HttpClient) {
 		log.Println(err)
 		return
 	}
-	req.Header.Set("connection", "keep-alive")
-	req.Header.Set("sec-ch-ua-platform", `"Windows"`)
-	req.Header.Set("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36")
-	req.Header.Set("sec-ch-ua", `"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"`)
-	req.Header.Set("sec-ch-ua-mobile", "?0")
-	req.Header.Set("accept", "* /*")
-	req.Header.Set("sec-fetch-site", "cross-site")
-	req.Header.Set("sec-fetch-mode", "cors")
-	req.Header.Set("sec-fetch-dest", "empty")
-	req.Header.Set("accept-encoding", "gzip, deflate, br, zstd")
-	req.Header.Set("accept-language", "en-US,en;q=0.9")
+	req.Header = http.Header{
+		"accept":                    {"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"},
+		"accept-language":           {"en-US,en;q=0.9"},
+		"cache-control":             {"no-cache"},
+		"pragma":                    {"no-cache"},
+		"priority":                  {"u=0, i"},
+		"sec-ch-ua":                 {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"sec-ch-ua-mobile":          {"?0"},
+		"sec-ch-ua-platform":        {`"Windows"`},
+		"sec-fetch-dest":            {"document"},
+		"sec-fetch-mode":            {"navigate"},
+		"sec-fetch-site":            {"same-origin"},
+		"upgrade-insecure-requests": {"1"},
+		"user-agent":                {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"},
+		http.HeaderOrderKey: {
+			"accept",
+			"accept-language",
+			"accept-encoding",
+			"cache-control",
+			"pragma",
+			"priority",
+			"sec-ch-ua",
+			"sec-ch-ua-mobile",
+			"sec-ch-ua-platform",
+			"sec-fetch-dest",
+			"sec-fetch-mode",
+			"sec-fetch-site",
+			"upgrade-insecure-requests",
+			"user-agent",
+		},
+	}
 	
 	resp, err := client.Do(req)
 	if err != nil {
@@ -82,50 +102,74 @@ func solveBinance(client tlsclient.HttpClient) {
 		log.Println(err)
 		return
 	}
-	fmt.Println(string(body))
 	
 	gokuProps, host, err := aws.Extract(string(body))
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	
 	waf, err := aws.NewAwsWaf(
 		host,
-		"huggingface.co",
+		"www.binance.com",
 		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
 		gokuProps,
 	)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
 	
 	token, err := waf.Run()
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
-	fmt.Println(token)
 	
-	parsed, _ := url.Parse("https://huggingface.co")
+	parsed, _ := url.Parse("https://www.binance.com/")
 	cookie := &http.Cookie{
 		Name:     "aws-waf-token",
 		Value:    token,
-		Domain:   "huggingface.co",
+		Domain:   "www.binance.com",
 		Path:     "/",
 		HttpOnly: true,
 	}
 	client.SetCookies(parsed, []*http.Cookie{cookie})
 	
-	resp, err = client.Get("https://www.binance.com/")
+	req, err = http.NewRequest(http.MethodGet, "https://www.binance.com/", nil)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
+	}
+	req.Header = http.Header{
+		"accept":                    {"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"},
+		"accept-language":           {"en-US,en;q=0.9"},
+		"cache-control":             {"no-cache"},
+		"pragma":                    {"no-cache"},
+		"priority":                  {"u=0, i"},
+		"sec-ch-ua":                 {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"sec-ch-ua-mobile":          {"?0"},
+		"sec-ch-ua-platform":        {`"Windows"`},
+		"sec-fetch-dest":            {"document"},
+		"sec-fetch-mode":            {"navigate"},
+		"sec-fetch-site":            {"same-origin"},
+		"upgrade-insecure-requests": {"1"},
+		"user-agent":                {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"},
+	}
+	
+	resp, err = client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return
 	}
 	defer resp.Body.Close()
 	
 	body, err = io.ReadAll(resp.Body)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return
 	}
-	fmt.Println(len(string(body)) > 5000)
+	fmt.Println(token, len(string(body)) > 5000)
 }
 
 func main() {
@@ -138,12 +182,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	for range 2 {
-		go func() {
-			for {
-				solveBinance(client)
-			}
-		}()
+	for {
+		solveBinance(client)
 	}
+	/*
+		for range 2 {
+			go func() {
+				for {
+					solveBinance(client)
+				}
+			}()
+		}*/
 	select {}
 }

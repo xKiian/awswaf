@@ -78,6 +78,6 @@ func SolveChallenge(challengeType, challengeInput, checksum string, difficulty i
 	} else if challengeType == "h7b0c470f0cfe3a80a9e26526ad185f484f6817d0832712a4a37a908786a6a67f" {
 		return HashPoW(challengeInput, checksum, difficulty)
 	} else {
-		panic("Challenge type not supported: " + challengeType)
+		return "", fmt.Errorf("unknown challengeType: %s", challengeType)
 	}
 }

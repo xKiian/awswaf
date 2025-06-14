@@ -135,6 +135,6 @@ func GetFP(userAgent string, ) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	//encrypted, err := Encrypt(payload)
-	return string(checksum), string(payload), nil
+	encrypted, err := Encrypt(payload)
+	return string(checksum), encrypted, err
 }
