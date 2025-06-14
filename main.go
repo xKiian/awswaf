@@ -38,7 +38,7 @@ func solveHuggingFace() {
 	html := string(body)
 	idx := strings.Index(html, `src="https://`)
 	if idx == -1 {
-		panic("couldn't find idx")
+		panic("couldn't find host")
 	}
 	idx += 13
 	tail := html[idx:]
@@ -203,6 +203,8 @@ func solveBinance(proxy string) {
 }
 
 func main() {
+	solveBinance("")
+	return
 	
 	file, err := os.Open("proxies.txt")
 	if err != nil {

@@ -190,3 +190,8 @@ type Verify struct {
 	Metrics       []VerifyMetrics `json:"metrics"`
 	GokuProps     GokuProps       `json:"goku_props"`
 }
+
+type VerifyRes struct {
+	Token  string      `json:"token"`
+	Inputs interface{} `json:"inputs"`
+}

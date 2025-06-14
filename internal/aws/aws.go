@@ -28,12 +28,9 @@ func NewAwsWaf(
 		tlsclient.WithTimeoutSeconds(5),
 		tlsclient.WithClientProfile(profiles.Chrome_133),
 		tlsclient.WithCookieJar(tlsclient.NewCookieJar()),
-		/*tlsclient.WithProxyUrl("http://127.0.0.1:8000"),
-		tlsclient.WithInsecureSkipVerify(),*/
 	}
 	if proxy != "" {
 		options = append(options, tlsclient.WithProxyUrl(proxy))
-		options = append(options, tlsclient.WithInsecureSkipVerify())
 	}
 	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
 	if err != nil {
@@ -55,6 +52,7 @@ func Extract(html string) (GokuProps, string, error) {
 	if start == -1 {
 		return GokuProps{}, "", fmt.Errorf("gokuProps not found")
 	}
+	
 	start += len(marker)
 	end := strings.Index(html[start:], ";")
 	if end == -1 {
@@ -86,12 +84,12 @@ func (a *Waf) GetInputs() (Inputs, error) {
 		return Inputs{}, err
 	}
 	req.Header = http.Header{
-		"accept":             {"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"},
-		"accept-encoding":    {"gzip, deflate, br, zstd"},
-		"accept-language":    {"en-US,en;q=0.9"},
-		"pragma":             {"no-cache"},
-		"priority":           {"u=0, i"},
-		"sec-ch-ua":          {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"accept":          {"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"},
+		"accept-encoding": {"gzip, deflate, br, zstd"},
+		"accept-language": {"en-US,en;q=0.9"},
+		"pragma":          {"no-cache"},
+		"priority":        {"u=0, i"},
+		//"sec-ch-ua":          {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
 		"sec-ch-ua-mobile":   {"?0"},
 		"sec-ch-ua-platform": {`"Windows"`},
 		"sec-fetch-dest":     {"empty"},
@@ -104,7 +102,7 @@ func (a *Waf) GetInputs() (Inputs, error) {
 			"accept-encoding",
 			"pragma",
 			"priority",
-			"sec-ch-ua",
+			//"sec-ch-ua",
 			"sec-ch-ua-mobile",
 			"sec-ch-ua-platform",
 			"sec-fetch-dest",
@@ -133,6 +131,7 @@ func (a *Waf) BuildPayload(inputs Inputs) (*Verify, error) {
 	if err != nil {
 		return nil, err
 	}
+	
 	sol, err := SolveChallenge(
 		inputs.ChallengeType, inputs.Challenge.Input,
 		checksum, inputs.Difficulty,
@@ -173,6 +172,7 @@ func (a *Waf) BuildPayload(inputs Inputs) (*Verify, error) {
 			Unit:  m.Unit,
 		})
 	}
+	
 	return &Verify{
 		Challenge:     inputs.Challenge,
 		Solution:      sol,
@@ -200,13 +200,13 @@ func (a *Waf) Verify(payload *Verify) (string, error) {
 		return "", err
 	}
 	req.Header = http.Header{
-		"accept":             {"*/*"},
-		"accept-encoding":    {"gzip, deflate, br, zstd"},
-		"connection":         {"keep-alive"},
-		"accept-language":    {"en-US,en;q=0.9"},
-		"content-type":       {"text/plain;charset=UTF-8"},
-		"priority":           {"u=1, i"},
-		"sec-ch-ua":          {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"accept":          {"*/*"},
+		"accept-encoding": {"gzip, deflate, br, zstd"},
+		"connection":      {"keep-alive"},
+		"accept-language": {"en-US,en;q=0.9"},
+		"content-type":    {"text/plain;charset=UTF-8"},
+		"priority":        {"u=1, i"},
+		//"sec-ch-ua":          {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
 		"sec-ch-ua-mobile":   {"?0"},
 		"sec-ch-ua-platform": {`"Windows"`},
 		"sec-fetch-dest":     {"empty"},
@@ -221,7 +221,7 @@ func (a *Waf) Verify(payload *Verify) (string, error) {
 			"content-length",
 			"content-type",
 			"priority",
-			"sec-ch-ua",
+			//"sec-ch-ua",
 			"sec-ch-ua-mobile",
 			"sec-ch-ua-platform",
 			"sec-fetch-dest",
@@ -239,13 +239,12 @@ func (a *Waf) Verify(payload *Verify) (string, error) {
 	
 	defer resp.Body.Close()
 	
-	var out map[string]interface{}
+	var out VerifyRes
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		return "", err
 	}
 	
-	token, _ := out["token"].(string)
-	return token, nil
+	return out.Token, nil
 }
 
 func (a *Waf) Run() (string, error) {
