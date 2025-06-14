@@ -55,7 +55,7 @@ traverse(ast, {
 		path.stop();
 	}
 })
-
+// i couldnt bother 🙏
 function a0_0x4494(_0x4b393f, _0x3cebfb) {
 	return a0_0x4494 = function (_0x557bee, _0x449473) {
 		_0x557bee = _0x557bee - 0x19d;
