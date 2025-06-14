@@ -53,7 +53,7 @@ func GetFP(userAgent string, ) (string, string, error) {
 	bins[0] = rand.Intn(2100) + 14473
 	bins[255] = rand.Intn(2100) + 14473
 	
-	gpu := gpus[rand.Intn(len(gpus)-1)]
+	gpu := gpus[rand.Intn(len(gpus))]
 	
 	fp := Fingerprint{
 		Metrics: Metrics{

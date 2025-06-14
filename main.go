@@ -8,12 +8,22 @@ import (
 	"github.com/bogdanfinn/tls-client/profiles"
 	"io"
 	"log"
+	"math/rand"
 	"net/url"
+	"os"
 	"strings"
+	"time"
 )
 
-func solveHuggingFace(client tlsclient.HttpClient) {
-	
+func solveHuggingFace() {
+	options := []tlsclient.HttpClientOption{
+		tlsclient.WithTimeoutSeconds(30),
+		tlsclient.WithClientProfile(profiles.Chrome_133),
+	}
+	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
+	if err != nil {
+		panic(err)
+	}
 	resp, err := client.Get("https://huggingface.co/")
 	if err != nil {
 		panic(err)
@@ -38,7 +48,7 @@ func solveHuggingFace(client tlsclient.HttpClient) {
 		host,
 		"huggingface.co",
 		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-		aws.GokuProps{},
+		aws.GokuProps{}, "",
 	)
 	if err != nil {
 		panic(err)
@@ -52,7 +62,18 @@ func solveHuggingFace(client tlsclient.HttpClient) {
 	
 }
 
-func solveBinance(client tlsclient.HttpClient) {
+func solveBinance(proxy string) {
+	options := []tlsclient.HttpClientOption{
+		tlsclient.WithTimeoutSeconds(30),
+		tlsclient.WithClientProfile(profiles.Chrome_133),
+		tlsclient.WithCookieJar(tlsclient.NewCookieJar()),
+		tlsclient.WithProxyUrl(proxy),
+		tlsclient.WithInsecureSkipVerify(),
+	}
+	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
+	if err != nil {
+		panic(err)
+	}
 	req, err := http.NewRequest(http.MethodGet, "https://www.binance.com/", nil)
 	if err != nil {
 		log.Println(err)
@@ -112,19 +133,23 @@ func solveBinance(client tlsclient.HttpClient) {
 	waf, err := aws.NewAwsWaf(
 		host,
 		"www.binance.com",
-		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
-		gokuProps,
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+		gokuProps, proxy,
 	)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	
+	start := time.Now()
+	
 	token, err := waf.Run()
 	if err != nil {
 		log.Println(err)
 		return
 	}
+	
+	end := time.Now()
 	
 	parsed, _ := url.Parse("https://www.binance.com/")
 	cookie := &http.Cookie{
@@ -169,29 +194,35 @@ func solveBinance(client tlsclient.HttpClient) {
 		log.Println(err)
 		return
 	}
-	fmt.Println(token, len(string(body)) > 5000)
+	
+	if len(string(body)) > 500 {
+		fmt.Printf("[+] Solved! %s in %s\n", token[len(token)-100:], end.Sub(start).String())
+	} else {
+		fmt.Println("[-] Failed to solve!")
+	}
 }
 
 func main() {
-	options := []tlsclient.HttpClientOption{
-		tlsclient.WithTimeoutSeconds(30),
-		tlsclient.WithClientProfile(profiles.Chrome_133),
-		tlsclient.WithCookieJar(tlsclient.NewCookieJar()),
-	}
-	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
+	
+	file, err := os.Open("proxies.txt")
 	if err != nil {
 		panic(err)
 	}
-	for {
-		solveBinance(client)
+	defer file.Close()
+	
+	content, err := io.ReadAll(file)
+	if err != nil {
+		panic(err)
 	}
-	/*
-		for range 2 {
-			go func() {
-				for {
-					solveBinance(client)
-				}
-			}()
-		}*/
+	proxies := strings.Split(string(content), "\n")
+	
+	for range 10 {
+		go func() {
+			for {
+				proxy := "http://" + strings.TrimSpace(proxies[rand.Intn(len(proxies))])
+				solveBinance(proxy)
+			}
+		}()
+	}
 	select {}
 }

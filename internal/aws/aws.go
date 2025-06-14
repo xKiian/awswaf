@@ -22,7 +22,7 @@ type Waf struct {
 
 func NewAwsWaf(
 	host, domain, userAgent string,
-	gokuProps GokuProps,
+	gokuProps GokuProps, proxy string,
 ) (*Waf, error) {
 	options := []tlsclient.HttpClientOption{
 		tlsclient.WithTimeoutSeconds(5),
@@ -30,6 +30,10 @@ func NewAwsWaf(
 		tlsclient.WithCookieJar(tlsclient.NewCookieJar()),
 		/*tlsclient.WithProxyUrl("http://127.0.0.1:8000"),
 		tlsclient.WithInsecureSkipVerify(),*/
+	}
+	if proxy != "" {
+		options = append(options, tlsclient.WithProxyUrl(proxy))
+		options = append(options, tlsclient.WithInsecureSkipVerify())
 	}
 	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
 	if err != nil {
