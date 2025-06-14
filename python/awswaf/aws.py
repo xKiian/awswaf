@@ -35,8 +35,8 @@ class AwsWaf:
     @staticmethod
     def extract(html: str):
         goku_props = json.loads(html.split("window.gokuProps = ")[1].split(";")[0])
-        endpoint = html.split("src=\"https://")[1].split("/challenge.js")[0]
-        return goku_props, endpoint
+        host = html.split("src=\"https://")[1].split("/challenge.js")[0]
+        return goku_props, host
 
     def get_inputs(self):
         return self.session.get(

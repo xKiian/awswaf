@@ -26,10 +26,10 @@ def solve():
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
     }
     response = session.get("https://www.binance.com/")
-    goku, endpoint = AwsWaf.extract(response.text)
+    goku, host = AwsWaf.extract(response.text)
 
     start = time.time()
-    token = AwsWaf(goku, endpoint, "www.binance.com")()
+    token = AwsWaf(goku, host, "www.binance.com")()
     end = time.time()
 
     session.headers.update({
