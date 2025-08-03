@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var key, _ = hex.DecodeString("93d9f6846b629edb2bdc4466af627d998496cb0c08f9cf043de68d6b25aa9693")
+var key, _ = hex.DecodeString("6f71a512b1e035eaab53d8be73120d3fb68a0ca346b9560aab3e5cdf753d5e98")
 
 func Encrypt(plaintext []byte) (string, error) {
 	iv := make([]byte, 12)

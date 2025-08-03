@@ -127,7 +127,7 @@ func GetFP(userAgent string, ) (string, string, error) {
 		BE:           BEBlock{SI: false},
 		End:          ts + 1,
 		Errors:       []any{},
-		Version:      "2.3.0",
+		Version:      "2.4.0",
 		ID:           uuid.New().String(),
 	}
 	

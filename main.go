@@ -85,14 +85,14 @@ func solveBinance(proxy string) {
 		"cache-control":             {"no-cache"},
 		"pragma":                    {"no-cache"},
 		"priority":                  {"u=0, i"},
-		"sec-ch-ua":                 {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"sec-ch-ua":                 {`"Google Chrome";v="138", "Chromium";v="138", "Not/A)Brand";v="24"`},
 		"sec-ch-ua-mobile":          {"?0"},
 		"sec-ch-ua-platform":        {`"Windows"`},
 		"sec-fetch-dest":            {"document"},
 		"sec-fetch-mode":            {"navigate"},
 		"sec-fetch-site":            {"same-origin"},
 		"upgrade-insecure-requests": {"1"},
-		"user-agent":                {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"},
+		"user-agent":                {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"},
 		http.HeaderOrderKey: {
 			"accept",
 			"accept-language",
@@ -133,7 +133,7 @@ func solveBinance(proxy string) {
 	waf, err := aws.NewAwsWaf(
 		host,
 		"www.binance.com",
-		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
+		"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
 		gokuProps, proxy,
 	)
 	if err != nil {
@@ -172,14 +172,14 @@ func solveBinance(proxy string) {
 		"cache-control":             {"no-cache"},
 		"pragma":                    {"no-cache"},
 		"priority":                  {"u=0, i"},
-		"sec-ch-ua":                 {`"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"`},
+		"sec-ch-ua":                 {`"Google Chrome";v="138", "Chromium";v="138", "Not/A)Brand";v="24"`},
 		"sec-ch-ua-mobile":          {"?0"},
 		"sec-ch-ua-platform":        {`"Windows"`},
 		"sec-fetch-dest":            {"document"},
 		"sec-fetch-mode":            {"navigate"},
 		"sec-fetch-site":            {"same-origin"},
 		"upgrade-insecure-requests": {"1"},
-		"user-agent":                {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"},
+		"user-agent":                {"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"},
 	}
 	
 	resp, err = client.Do(req)
@@ -195,7 +195,7 @@ func solveBinance(proxy string) {
 		return
 	}
 	
-	if len(string(body)) > 500 {
+	if len(string(body)) > 5000 {
 		fmt.Printf("[+] Solved! %s in %s\n", token[len(token)-100:], end.Sub(start).String())
 	} else {
 		fmt.Println("[-] Failed to solve!")

@@ -142,7 +142,7 @@ func (a *Waf) BuildPayload(inputs Inputs) (*Verify, error) {
 	}
 	
 	signals := []VerifySignals{{
-		Name: "KramerAndRio",
+		Name: "Zoey",
 		Value: ValueVerifySignals{
 			Present: fpPayload,
 		},

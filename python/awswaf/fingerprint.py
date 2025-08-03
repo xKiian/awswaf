@@ -119,7 +119,7 @@ def get_fp(user_agent: str):
         },
         "end": ts + 1,
         "errors": [],
-        "version": "2.3.0",
+        "version": "2.4.0",
         "id": str(uuid.uuid4()),
     }
     checksum, data = encode_with_crc(fp)

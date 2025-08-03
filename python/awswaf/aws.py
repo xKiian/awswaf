@@ -49,7 +49,7 @@ class AwsWaf:
             "challenge": inputs["challenge"],
             "checksum": checksum,
             "solution": verify(inputs["challenge"]["input"], checksum, inputs["difficulty"]),
-            "signals": [{"name": "KramerAndRio", "value": {"Present": fp}}],
+            "signals": [{"name": "Zoey", "value": {"Present": fp}}],
             "existing_token": None,
             "client": "Browser",
             "domain": self.domain,
