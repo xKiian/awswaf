@@ -58,7 +58,7 @@ func GetFP(userAgent string, ) (string, string, error) {
 	fp := Fingerprint{
 		Metrics: Metrics{
 			Fp2: 1, Browser: 0, Capabilities: 1, GPU: 7, DNT: 0, Math: 0, Screen: 0,
-			Navigator: 0, Auto: 1, Stealth: 0, Subtle: 0, Canvas: 5, FormDetector: 1, BE: 0,
+			Navigator: 0, Auto: 1, Stealth: 0, Subtle: 0, Canvas: 113, FormDetector: 1, BE: 0,
 		},
 		Start:        ts,
 		FlashVersion: nil,

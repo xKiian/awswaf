@@ -3,14 +3,16 @@
 <div>
     <img src="https://wakatime.com/badge/user/839267df-3912-44c6-97f4-9e3f0425b716/project/9dc3053a-dbfd-480c-8ec8-e6cf10663105.svg" alt="wakatime">
     <br>
+    <img src="assets/captcha.png">
     <img src="assets/showcase.png">
+    <img src="assets/powhttp.png">
 </div>
 
 --- 
 
 # Overview
 
-This project provides a Golang & Python-based solver for the AWS WAF challenge.
+This project provides a Golang & Python-based solver for the AWS WAF challenge. It supports both the type "token" / "Invisible" and type "Captcha" using gemini 
 
 ---
 

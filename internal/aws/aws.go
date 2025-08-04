@@ -13,11 +13,11 @@ import (
 )
 
 type Waf struct {
-	session   tlsclient.HttpClient
+	Session   tlsclient.HttpClient
 	gokuProps GokuProps
-	host      string
-	domain    string
-	userAgent string
+	Host      string
+	Domain    string
+	UserAgent string
 }
 
 func NewAwsWaf(
@@ -32,17 +32,18 @@ func NewAwsWaf(
 	if proxy != "" {
 		options = append(options, tlsclient.WithProxyUrl(proxy))
 	}
+	//options = append(options, tlsclient.WithCharlesProxy("", "53961"))
 	client, err := tlsclient.NewHttpClient(tlsclient.NewNoopLogger(), options...)
 	if err != nil {
 		return nil, err
 	}
 	
 	return &Waf{
-		session:   client,
+		Session:   client,
 		gokuProps: gokuProps,
-		host:      host,
-		domain:    domain,
-		userAgent: userAgent,
+		Host:      host,
+		Domain:    domain,
+		UserAgent: userAgent,
 	}, nil
 }
 
@@ -75,8 +76,43 @@ func Extract(html string) (GokuProps, string, error) {
 	return gokuProps, host, nil
 }
 
+func ExtractCaptcha(html string) (GokuProps, string, error) {
+	const marker = "window.gokuProps = "
+	start := strings.Index(html, marker)
+	if start == -1 {
+		return GokuProps{}, "", fmt.Errorf("gokuProps not found")
+	}
+	
+	start += len(marker)
+	end := strings.Index(html[start:], ";")
+	if end == -1 {
+		return GokuProps{}, "", fmt.Errorf("end of gokuProps not found")
+	}
+	
+	var gokuProps GokuProps
+	if err := json.Unmarshal([]byte(html[start:start+end]), &gokuProps); err != nil {
+		return GokuProps{}, "", err
+	}
+	
+	captchaMarker := `src="https://`
+	captchaIndex := strings.Index(html, `/captcha.js`)
+	if captchaIndex == -1 {
+		return gokuProps, "", fmt.Errorf("captcha.js not found")
+	}
+	
+	startQuote := strings.LastIndex(html[:captchaIndex], captchaMarker)
+	if startQuote == -1 {
+		return gokuProps, "", fmt.Errorf("captcha src not found")
+	}
+	
+	startURL := startQuote + len(captchaMarker)
+	host := html[startURL:captchaIndex]
+	
+	return gokuProps, host, nil
+}
+
 func (a *Waf) GetInputs() (Inputs, error) {
-	url := fmt.Sprintf("https://%s/inputs?client=browser", a.host)
+	url := fmt.Sprintf("https://%s/inputs?client=browser", a.Host)
 	
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -95,7 +131,7 @@ func (a *Waf) GetInputs() (Inputs, error) {
 		"sec-fetch-dest":     {"empty"},
 		"sec-fetch-mode":     {"cors"},
 		"sec-fetch-site":     {"cross-site"},
-		"user-agent":         {a.userAgent},
+		"user-agent":         {a.UserAgent},
 		http.HeaderOrderKey: {
 			"accept",
 			"accept-language",
@@ -112,7 +148,7 @@ func (a *Waf) GetInputs() (Inputs, error) {
 		},
 	}
 	
-	resp, err := a.session.Do(req)
+	resp, err := a.Session.Do(req)
 	if err != nil {
 		log.Println(err)
 		return Inputs{}, err
@@ -127,7 +163,7 @@ func (a *Waf) GetInputs() (Inputs, error) {
 }
 
 func (a *Waf) BuildPayload(inputs Inputs) (*Verify, error) {
-	checksum, fpPayload, err := GetFP(a.userAgent)
+	checksum, fpPayload, err := GetFP(a.UserAgent)
 	if err != nil {
 		return nil, err
 	}
@@ -180,14 +216,14 @@ func (a *Waf) BuildPayload(inputs Inputs) (*Verify, error) {
 		Checksum:      checksum,
 		ExistingToken: nil,
 		Client:        "Browser",
-		Domain:        a.domain,
+		Domain:        a.Domain,
 		Metrics:       metrics,
 		GokuProps:     a.gokuProps,
 	}, nil
 }
 
 func (a *Waf) Verify(payload *Verify) (string, error) {
-	url := fmt.Sprintf("https://%s/verify", a.host)
+	url := fmt.Sprintf("https://%s/verify", a.Host)
 	
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -212,7 +248,7 @@ func (a *Waf) Verify(payload *Verify) (string, error) {
 		"sec-fetch-dest":     {"empty"},
 		"sec-fetch-mode":     {"cors"},
 		"sec-fetch-site":     {"cross-site"},
-		"user-agent":         {a.userAgent},
+		"user-agent":         {a.UserAgent},
 		http.HeaderOrderKey: {
 			"accept",
 			"accept-encoding",
@@ -231,7 +267,7 @@ func (a *Waf) Verify(payload *Verify) (string, error) {
 		},
 	}
 	
-	resp, err := a.session.Do(req)
+	resp, err := a.Session.Do(req)
 	if err != nil {
 		log.Println(err)
 		return "", err
